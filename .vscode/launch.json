@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "StudyAI - Chrome (IA real)",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "chrome",
+      "toolArgs": [
+        "--dart-define=AI_ENDPOINT=https://abyivhafxbutmvgudktw.supabase.co/functions/v1/study-ai",
+        "--dart-define=SUPABASE_PUBLISHABLE_KEY=sb_publishable_SOOZgD8Lx2yPMhcyWazyBA_5QpODy4W"
+      ]
+    },
+    {
+      "name": "StudyAI - Chrome (Demo)",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "chrome"
+    }
+  ]
+}
