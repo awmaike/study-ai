@@ -29,6 +29,7 @@ node --test supabase/functions/study-ai/quiz_test.ts
 
 ## Segurança
 
-A função valida o cabeçalho `apikey` contra as chaves públicas do projeto.
-`verify_jwt` fica desativado porque o aplicativo acadêmico não possui login de
-usuários. A chave do Gemini nunca é enviada ao Flutter.
+A função valida o cabeçalho `apikey` e verifica o token do usuário no Supabase
+Auth antes de chamar o Gemini. `verify_jwt` continua desativado na plataforma;
+a função faz essa verificação explicitamente. A chave do Gemini nunca é enviada
+ao Flutter.

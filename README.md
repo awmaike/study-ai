@@ -25,6 +25,8 @@ Depois que o Chrome abrir, pressione **F12**, ative a barra de dispositivos e se
 
 Aplicativo de estudos desenvolvido em **Flutter e Dart** para transformar temas, textos e fotos em materiais de revisão. A interface foi pensada para celular e também pode ser demonstrada no Chrome com a visualização mobile.
 
+O acesso publicado usa conta com **e-mail e senha** pelo Supabase Auth. Na primeira visita, escolha **Criar uma conta**. Os materiais, tarefas e resultados continuam salvos neste navegador, separados por conta; entrar em outro dispositivo não sincroniza esses dados. O Supabase precisa estar configurado com **Confirm Email** desativado para criar a conta sem mensagem de confirmação.
+
 ## Resumo para falar (cerca de 1 minuto)
 
 > O StudyAI é um aplicativo de estudos desenvolvido em Flutter e Dart. Ele permite inserir um tema, colar um texto ou fotografar um conteúdo para gerar resumos, explicações, quizzes e flashcards. Também oferece uma rotina com tarefas e cronômetro de foco, uma biblioteca de materiais salvos e uma tela de desempenho. Usei Provider e ChangeNotifier para gerenciar o estado, SharedPreferences para guardar dados localmente e uma Supabase Edge Function para comunicar o aplicativo com o Gemini por HTTP e JSON. A chave secreta da IA fica no servidor. O objetivo é reunir estudo, prática e acompanhamento em um aplicativo mobile.
@@ -37,7 +39,7 @@ Aplicativo de estudos desenvolvido em **Flutter e Dart** para transformar temas,
 - **Biblioteca:** salva resumos e explicações localmente, com busca, cópia e uso do material para gerar quiz ou flashcards.
 - **Rotina:** tarefas por matéria e data, meta diária configurável de 5, 10, 15 ou 20 questões e cronômetro de foco de 15, 25 ou 45 minutos.
 - **Progresso:** média, acertos, histórico e gráfico de desempenho.
-- **Ajustes:** tema claro/escuro, escolha da meta diária e histórico de exemplo.
+- **Ajustes:** tema claro/escuro, escolha da meta diária, histórico de exemplo e saída da conta.
 
 ## Como executar para a apresentação
 
@@ -50,7 +52,7 @@ flutter pub get
 
 No Windows, execute `run_study_ai.bat`. No Linux ou macOS, execute `./run_study_ai.sh` (talvez seja necessário `chmod +x run_study_ai.sh`). Esses inicializadores passam ao Flutter o endereço da função Supabase e sua chave pública. A chave secreta do Gemini permanece nos Secrets do servidor.
 
-O comando `flutter run -d chrome` sem o inicializador abre o app sem a IA configurada. Nesse modo, resumos, explicações e flashcards baseados em texto podem usar respostas locais de demonstração; **quizzes, temas e fotos precisam da IA conectada**. Faça uma geração real para conferir que o serviço está acessível.
+O comando `flutter run -d chrome` sem o inicializador não configura o login. Use o inicializador com Supabase e internet para entrar na conta. Resumos, explicações e flashcards baseados em texto ainda podem usar respostas locais de demonstração se a IA falhar; **quizzes, temas e fotos precisam da IA conectada**. Faça uma geração real para conferir que o serviço está acessível.
 
 Para exibir como celular no Chrome, pressione **F12**, ative a barra de dispositivos e escolha um aparelho em modo retrato.
 

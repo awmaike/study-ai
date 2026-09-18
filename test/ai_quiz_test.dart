@@ -47,6 +47,24 @@ void main() {
     expect(result.data, quiz);
   });
 
+  test('envia token de sessão na chamada da IA', () async {
+    final ai = AIService(
+      apiEndpoint: 'https://example.test/quiz',
+      apiKey: 'public-key',
+      accessToken: () => 'session-token',
+      client: MockClient((request) async {
+        expect(request.headers['apikey'], 'public-key');
+        expect(request.headers['authorization'], 'Bearer session-token');
+        return http.Response(jsonEncode({'result': 'Resumo pronto.'}), 200);
+      }),
+    );
+    final result = await ai.process(
+      action: StudyAction.summary,
+      content: content,
+    );
+    expect(result.data['result'], 'Resumo pronto.');
+  });
+
   test('sem configuração não gera quiz genérico, nem sobre Provider', () async {
     final ai = AIService(apiEndpoint: '', apiKey: '');
     for (final text in [content, DemoAIService.sampleContent]) {

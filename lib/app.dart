@@ -6,7 +6,9 @@ import 'screens/app_shell.dart';
 import 'theme/app_theme.dart';
 
 class StudyAIApp extends StatelessWidget {
-  const StudyAIApp({super.key});
+  const StudyAIApp({super.key, this.home});
+
+  final Widget? home;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class StudyAIApp extends StatelessWidget {
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: theme.themeMode,
-      home: const AppShell(),
+      home: home ?? const AppShell(),
     );
   }
 }

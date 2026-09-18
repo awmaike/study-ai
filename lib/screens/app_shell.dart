@@ -11,7 +11,10 @@ import 'study_screen.dart';
 import 'routine_screen.dart';
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({super.key, this.accountEmail, this.onSignOut});
+
+  final String? accountEmail;
+  final Future<void> Function()? onSignOut;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -53,7 +56,10 @@ class _AppShellState extends State<AppShell> {
       const StudyScreen(),
       const RoutineScreen(),
       const PerformanceScreen(),
-      const SettingsScreen(),
+      SettingsScreen(
+        accountEmail: widget.accountEmail,
+        onSignOut: widget.onSignOut,
+      ),
     ];
 
     return Scaffold(

@@ -26,14 +26,20 @@ class StudyRequestException implements Exception {
 }
 
 class AIService {
-  AIService({http.Client? client, String? apiEndpoint, String? apiKey})
+  AIService(
+      {http.Client? client,
+      String? apiEndpoint,
+      String? apiKey,
+      String? Function()? accessToken})
       : _client = client ?? http.Client(),
         _endpoint = apiEndpoint ?? endpoint,
-        _publishableKey = apiKey ?? publishableKey;
+        _publishableKey = apiKey ?? publishableKey,
+        _accessToken = accessToken;
 
   final http.Client _client;
   final String _endpoint;
   final String _publishableKey;
+  final String? Function()? _accessToken;
   final DemoAIService _demo = DemoAIService();
 
   static const String endpoint =
@@ -92,6 +98,8 @@ class AIService {
             headers: {
               'Content-Type': 'application/json',
               'apikey': _publishableKey,
+              if (_accessToken?.call() case final token?)
+                'Authorization': 'Bearer $token',
             },
             body: jsonEncode({
               'action': action.apiValue,

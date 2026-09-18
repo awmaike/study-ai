@@ -36,6 +36,27 @@ function hasValidClientKey(request: Request) {
   return provided === legacyAnonKey;
 }
 
+async function hasAuthenticatedUser(request: Request) {
+  const authorization = request.headers.get("authorization") ?? "";
+  if (!authorization.startsWith("Bearer ")) return false;
+  const token = authorization.slice(7).trim();
+  if (!token || token.startsWith("sb_")) return false;
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const apiKey = request.headers.get("apikey");
+  if (!supabaseUrl || !apiKey) return false;
+
+  try {
+    const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: { apikey: apiKey, authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(10000),
+    });
+    return response.ok;
+  } catch (_) {
+    return false;
+  }
+}
+
 function buildPrompt(action: StudyAction, content: string, mode: string, topic: boolean,
   questionCount = 10, difficulty = "medium") {
   const base = `
@@ -110,6 +131,10 @@ Deno.serve(async (request) => {
 
   if (!hasValidClientKey(request)) {
     return jsonResponse({ error: "Aplicativo não autorizado." }, 401);
+  }
+
+  if (!await hasAuthenticatedUser(request)) {
+    return jsonResponse({ error: "Entre na sua conta para usar a IA." }, 401);
   }
 
   try {

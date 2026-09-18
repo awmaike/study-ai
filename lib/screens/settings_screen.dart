@@ -5,7 +5,10 @@ import '../providers/study_provider.dart';
 import '../providers/theme_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, this.accountEmail, this.onSignOut});
+
+  final String? accountEmail;
+  final Future<void> Function()? onSignOut;
 
   Future<void> _confirmClear(BuildContext context) async {
     final confirmed = await showDialog<bool>(
@@ -82,8 +85,8 @@ class SettingsScreen extends StatelessWidget {
                   value: study.dailyGoal,
                   underline: const SizedBox.shrink(),
                   items: [5, 10, 15, 20]
-                      .map((value) => DropdownMenuItem(
-                          value: value, child: Text('$value')))
+                      .map((value) =>
+                          DropdownMenuItem(value: value, child: Text('$value')))
                       .toList(),
                   onChanged: (value) async {
                     if (value == null) return;
@@ -104,6 +107,44 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
         ),
+        if (onSignOut != null) ...[
+          const SizedBox(height: 22),
+          Text(
+            'Conta',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+          ),
+          const SizedBox(height: 12),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.account_circle_outlined),
+                  title: const Text('Conectado como'),
+                  subtitle: Text(accountEmail ?? ''),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.logout_rounded),
+                  title: const Text('Sair da conta'),
+                  onTap: () async {
+                    try {
+                      await onSignOut!();
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Não foi possível sair da conta.'),
+                        ));
+                      }
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
         const SizedBox(height: 22),
         Text(
           'Histórico',

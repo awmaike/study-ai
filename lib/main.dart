@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
-import 'providers/study_provider.dart';
 import 'providers/theme_provider.dart';
-import 'services/ai_service.dart';
 import 'services/storage_service.dart';
+import 'screens/auth_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,20 +14,32 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final storage = StorageService(prefs);
 
+  const endpoint = String.fromEnvironment('AI_ENDPOINT');
+  const publishableKey = String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
+  if (endpoint.isNotEmpty && publishableKey.isNotEmpty) {
+    await Supabase.initialize(
+      url: Uri.parse(endpoint).origin,
+      publishableKey: publishableKey,
+    );
+  }
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(storage),
         ),
-        ChangeNotifierProvider(
-          create: (_) => StudyProvider(
-            aiService: AIService(),
-            storageService: storage,
-          ),
-        ),
       ],
-      child: const StudyAIApp(),
+      child: StudyAIApp(
+        home: endpoint.isNotEmpty && publishableKey.isNotEmpty
+            ? AuthGate(preferences: prefs)
+            : const Scaffold(
+                body: Center(
+                  child: Text(
+                      'Inicie pelo run_study_ai.bat para acessar sua conta.'),
+                ),
+              ),
+      ),
     ),
   );
 }
