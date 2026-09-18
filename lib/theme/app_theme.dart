@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color seed = Color(0xFF645BFF);
+  static const Color seed = Color(0xFF4166F5);
 
   static ThemeData _base(Brightness brightness) {
     final dark = brightness == Brightness.dark;
@@ -9,10 +9,23 @@ class AppTheme {
       seedColor: seed,
       brightness: brightness,
     ).copyWith(
-      primary: dark ? const Color(0xFFAAA5FF) : const Color(0xFF5B52F2),
-      secondary: dark ? const Color(0xFF71E7DC) : const Color(0xFF087F78),
-      tertiary: dark ? const Color(0xFFFFB1C8) : const Color(0xFFB52C64),
-      surface: dark ? const Color(0xFF171923) : Colors.white,
+      primary: dark ? const Color(0xFF9DB2FF) : const Color(0xFF365BE8),
+      onPrimary: dark ? const Color(0xFF12235C) : Colors.white,
+      primaryContainer:
+          dark ? const Color(0xFF203166) : const Color(0xFFE5ECFF),
+      onPrimaryContainer:
+          dark ? const Color(0xFFDCE5FF) : const Color(0xFF233D8A),
+      secondary: dark ? const Color(0xFFB8A3FF) : const Color(0xFF7950D6),
+      secondaryContainer:
+          dark ? const Color(0xFF28254A) : const Color(0xFFEEE9FF),
+      onSecondaryContainer:
+          dark ? const Color(0xFFE5DEFF) : const Color(0xFF3E2D76),
+      tertiary: dark ? const Color(0xFF85BFFF) : const Color(0xFF3276CE),
+      surface: dark ? const Color(0xFF131C33) : Colors.white,
+      onSurface: dark ? const Color(0xFFE7EDFF) : const Color(0xFF172443),
+      onSurfaceVariant:
+          dark ? const Color(0xFFA4B3D1) : const Color(0xFF5A6B8B),
+      outlineVariant: dark ? const Color(0xFF2B3957) : const Color(0xFFDCE4F3),
     );
 
     final base = ThemeData(
@@ -20,10 +33,25 @@ class AppTheme {
       brightness: brightness,
       colorScheme: scheme,
       scaffoldBackgroundColor:
-          dark ? const Color(0xFF0E1018) : const Color(0xFFF6F7FC),
+          dark ? const Color(0xFF0B1224) : const Color(0xFFF3F6FC),
     );
 
     return base.copyWith(
+      cardTheme: CardThemeData(
+        color: scheme.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+            side: BorderSide(color: scheme.outlineVariant)),
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: base.scaffoldBackgroundColor,
+        surfaceTintColor: Colors.transparent,
+        foregroundColor: scheme.onSurface,
+        elevation: 0,
+        centerTitle: false,
+      ),
       textTheme: base.textTheme.copyWith(
         headlineLarge: base.textTheme.headlineLarge?.copyWith(
           fontWeight: FontWeight.w900,
@@ -43,7 +71,7 @@ class AppTheme {
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: dark ? const Color(0xFF151720) : Colors.white,
+        backgroundColor: scheme.surface,
         indicatorColor: scheme.primaryContainer,
         elevation: 0,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
@@ -65,6 +93,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(16),
           ),
           textStyle: const TextStyle(
+            fontFamily: 'Roboto',
             fontWeight: FontWeight.w800,
             fontSize: 15,
           ),
@@ -77,12 +106,13 @@ class AppTheme {
             borderRadius: BorderRadius.circular(16),
           ),
           side: BorderSide(color: scheme.outlineVariant),
-          textStyle: const TextStyle(fontWeight: FontWeight.w700),
+          textStyle: const TextStyle(
+              fontFamily: 'Roboto', fontWeight: FontWeight.w700),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: dark ? const Color(0xFF191C27) : Colors.white,
+        fillColor: scheme.surface,
         contentPadding: const EdgeInsets.all(18),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
@@ -100,7 +130,10 @@ class AppTheme {
       chipTheme: base.chipTheme.copyWith(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         side: BorderSide(color: scheme.outlineVariant),
-        labelStyle: const TextStyle(fontWeight: FontWeight.w700),
+        labelStyle: TextStyle(
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w700,
+            color: scheme.onSurface),
       ),
       dividerTheme: DividerThemeData(color: scheme.outlineVariant),
       snackBarTheme: SnackBarThemeData(

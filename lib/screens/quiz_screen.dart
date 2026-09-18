@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/study_provider.dart';
+import '../widgets/quiz_review.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -17,12 +18,14 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _finished = false;
   bool _saved = false;
   int _score = 0;
+  final Map<int, int> _answers = {};
 
   void _confirm(int correctIndex) {
     if (_selected == null || _confirmed) return;
 
     setState(() {
       _confirmed = true;
+      _answers[_current] = _selected!;
       if (_selected == correctIndex) {
         _score++;
       }
@@ -55,6 +58,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _restart() {
+    context.read<StudyProvider>().reshuffleQuiz();
     setState(() {
       _current = 0;
       _selected = null;
@@ -62,6 +66,7 @@ class _QuizScreenState extends State<QuizScreen> {
       _finished = false;
       _saved = false;
       _score = 0;
+      _answers.clear();
     });
   }
 
@@ -89,6 +94,7 @@ class _QuizScreenState extends State<QuizScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 620),
             child: ListView(
+              key: const ValueKey('quiz-result'),
               padding: const EdgeInsets.all(24),
               children: [
                 const SizedBox(height: 30),
@@ -148,6 +154,8 @@ class _QuizScreenState extends State<QuizScreen> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Voltar para estudar'),
                 ),
+                const SizedBox(height: 30),
+                QuizReview(questions: questions, answers: _answers),
               ],
             ),
           ),
@@ -166,6 +174,7 @@ class _QuizScreenState extends State<QuizScreen> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 620),
           child: ListView(
+            key: ValueKey('quiz-question-$_current'),
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
             children: [
               Row(

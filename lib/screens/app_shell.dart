@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../models/study_action.dart';
 import '../providers/study_provider.dart';
+import '../widgets/study_glyph.dart';
 import 'home_screen.dart';
 import 'performance_screen.dart';
 import 'settings_screen.dart';
 import 'study_screen.dart';
+import 'routine_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -49,6 +51,7 @@ class _AppShellState extends State<AppShell> {
     final pages = [
       HomeScreen(onOpenStudy: _openStudy),
       const StudyScreen(),
+      const RoutineScreen(),
       const PerformanceScreen(),
       const SettingsScreen(),
     ];
@@ -78,23 +81,23 @@ class _AppShellState extends State<AppShell> {
           onDestinationSelected: _goTo,
           destinations: const [
             NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home_rounded),
+              icon: StudyGlyph(StudyGlyphKind.home),
               label: 'Início',
             ),
             NavigationDestination(
-              icon: Icon(Icons.auto_awesome_outlined),
-              selectedIcon: Icon(Icons.auto_awesome_rounded),
+              icon: StudyGlyph(StudyGlyphKind.book),
               label: 'Estudar',
             ),
             NavigationDestination(
-              icon: Icon(Icons.insights_outlined),
-              selectedIcon: Icon(Icons.insights_rounded),
+              icon: StudyGlyph(StudyGlyphKind.quiz),
+              label: 'Rotina',
+            ),
+            NavigationDestination(
+              icon: StudyGlyph(StudyGlyphKind.progress),
               label: 'Progresso',
             ),
             NavigationDestination(
-              icon: Icon(Icons.tune_outlined),
-              selectedIcon: Icon(Icons.tune_rounded),
+              icon: StudyGlyph(StudyGlyphKind.settings),
               label: 'Ajustes',
             ),
           ],

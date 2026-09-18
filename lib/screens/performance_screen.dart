@@ -19,9 +19,7 @@ class PerformanceScreen extends StatelessWidget {
     final study = context.watch<StudyProvider>();
     final scheme = Theme.of(context).colorScheme;
     final average = study.averagePercentage.round();
-    final chartValues = study.recentPercentages.isEmpty
-        ? <double>[55, 68, 63, 74, 82]
-        : study.recentPercentages;
+    final chartValues = study.recentPercentages;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 120),
@@ -164,16 +162,21 @@ class PerformanceScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              MiniLineChart(values: chartValues, height: 170),
-              if (study.history.isEmpty) ...[
-                const SizedBox(height: 10),
-                Text(
-                  'Prévia visual — seus resultados reais aparecerão aqui.',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                ),
-              ],
+              if (chartValues.isEmpty)
+                SizedBox(
+                  height: 170,
+                  child: Center(
+                    child: Text(
+                      'Conclua um quiz para ver o gráfico de evolução.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                )
+              else
+                MiniLineChart(values: chartValues, height: 170),
             ],
           ),
         ),

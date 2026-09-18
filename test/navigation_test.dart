@@ -33,7 +33,11 @@ void main() {
 
     await tester.tap(find.byKey(const Key('home-start-button')));
     await tester.pumpAndSettle();
-    expect(find.text('Laboratório IA'), findsOneWidget);
+    expect(find.text('Espaço de Estudos'), findsOneWidget);
+
+    await tester.tap(find.text('Rotina'));
+    await tester.pumpAndSettle();
+    expect(find.text('Minha rotina'), findsOneWidget);
 
     await tester.tap(find.text('Progresso'));
     await tester.pumpAndSettle();
@@ -41,6 +45,9 @@ void main() {
 
     await tester.tap(find.text('Ajustes'));
     await tester.pumpAndSettle();
-    expect(find.text('Personalize o aplicativo e prepare a demonstração.'), findsOneWidget);
+    expect(find.text('Personalize sua experiência de estudo.'),
+        findsOneWidget);
+    expect(find.text('IA configurada'), findsNothing);
+    expect(find.text('Sobre o projeto'), findsNothing);
   });
 }

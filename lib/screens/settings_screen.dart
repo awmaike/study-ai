@@ -50,19 +50,19 @@ class SettingsScreen extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          'Personalize o aplicativo e prepare a demonstração.',
+          'Personalize sua experiência de estudo.',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: scheme.onSurfaceVariant,
               ),
         ),
         const SizedBox(height: 22),
-        Container(
-          decoration: BoxDecoration(
-            color: scheme.surface,
+        Material(
+          color: scheme.surface,
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: scheme.outlineVariant.withOpacity(0.6),
-            ),
+            side:
+                BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
           ),
           child: Column(
             children: [
@@ -75,19 +75,30 @@ class SettingsScreen extends StatelessWidget {
               ),
               const Divider(height: 1),
               ListTile(
-                leading: Icon(
-                  study.aiConfigured
-                      ? Icons.cloud_done_rounded
-                      : Icons.science_outlined,
-                  color: study.aiConfigured ? Colors.green : scheme.primary,
-                ),
-                title: Text(
-                  study.aiConfigured ? 'IA configurada' : 'Modo demonstração',
-                ),
-                subtitle: Text(
-                  study.aiConfigured
-                      ? 'O app tentará usar o backend e cai para o modo demo se necessário.'
-                      : 'Sem endpoint configurado. Todas as telas continuam funcionando.',
+                leading: const Icon(Icons.flag_outlined),
+                title: const Text('Meta diária de questões'),
+                subtitle: const Text('Quizzes concluídos no dia'),
+                trailing: DropdownButton<int>(
+                  value: study.dailyGoal,
+                  underline: const SizedBox.shrink(),
+                  items: [5, 10, 15, 20]
+                      .map((value) => DropdownMenuItem(
+                          value: value, child: Text('$value')))
+                      .toList(),
+                  onChanged: (value) async {
+                    if (value == null) return;
+                    try {
+                      await context.read<StudyProvider>().setDailyGoal(value);
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Não foi possível salvar a meta.'),
+                          ),
+                        );
+                      }
+                    }
+                  },
                 ),
               ),
             ],
@@ -95,19 +106,19 @@ class SettingsScreen extends StatelessWidget {
         ),
         const SizedBox(height: 22),
         Text(
-          'Demonstração',
+          'Histórico',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w800,
               ),
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: scheme.surface,
+        Material(
+          color: scheme.surface,
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: scheme.outlineVariant.withOpacity(0.6),
-            ),
+            side:
+                BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
           ),
           child: Column(
             children: [
@@ -115,7 +126,7 @@ class SettingsScreen extends StatelessWidget {
                 leading: const Icon(Icons.bar_chart_rounded),
                 title: const Text('Carregar histórico de exemplo'),
                 subtitle: const Text(
-                  'Preenche os gráficos com dados para testar a apresentação.',
+                  'Preenche os gráficos com resultados de exemplo.',
                 ),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () async {
@@ -123,7 +134,7 @@ class SettingsScreen extends StatelessWidget {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Dados de demonstração carregados.'),
+                        content: Text('Histórico de exemplo carregado.'),
                       ),
                     );
                   }
@@ -141,82 +152,6 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 subtitle: const Text('Apaga apenas os resultados locais.'),
                 onTap: () => _confirmClear(context),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 22),
-        Text(
-          'Sobre o projeto',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: scheme.surface,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: scheme.outlineVariant.withOpacity(0.6),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: scheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      Icons.psychology_alt_rounded,
-                      color: scheme.onPrimaryContainer,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'StudyAI',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 18,
-                          ),
-                        ),
-                        Text('Flutter + Dart • Trabalho acadêmico'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Tecnologias demonstradas:',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '• Flutter e Dart\n'
-                '• Provider / ChangeNotifier\n'
-                '• Navegação entre telas\n'
-                '• HTTP + JSON\n'
-                '• SharedPreferences\n'
-                '• Tema claro e escuro\n'
-                '• Integração preparada para IA',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      height: 1.55,
-                      color: scheme.onSurfaceVariant,
-                    ),
               ),
             ],
           ),

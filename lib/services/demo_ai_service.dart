@@ -31,7 +31,8 @@ O uso correto do Provider ajuda a separar regra de negócio da interface e reduz
           'result': _genericExplanation(content, explanationMode),
         };
       case StudyAction.quiz:
-        return _genericQuiz(content);
+        throw StateError(
+            'Conecte a IA para gerar perguntas sobre o seu texto.');
       case StudyAction.flashcards:
         return _genericFlashcards(content);
     }
@@ -44,8 +45,7 @@ O uso correto do Provider ajuda a separar regra de negócio da interface e reduz
     switch (action) {
       case StudyAction.summary:
         return {
-          'result':
-              '• Provider é usado para gerenciamento de estado no Flutter.\n'
+          'result': '• Provider é usado para gerenciamento de estado no Flutter.\n'
               '• ChangeNotifier guarda o estado e chama notifyListeners() quando algo muda.\n'
               '• ChangeNotifierProvider disponibiliza o estado para a árvore de widgets.\n'
               '• Consumer reconstrói apenas a parte da interface que depende daquele estado.\n'
@@ -55,8 +55,7 @@ O uso correto do Provider ajuda a separar regra de negócio da interface e reduz
       case StudyAction.explanation:
         if (mode == 'academic') {
           return {
-            'result':
-                'Provider é uma solução de gerenciamento e injeção de dependências no Flutter. '
+            'result': 'Provider é uma solução de gerenciamento e injeção de dependências no Flutter. '
                 'Um ChangeNotifier encapsula dados mutáveis e notifica listeners através de '
                 'notifyListeners(). O ChangeNotifierProvider expõe essa instância à subárvore, '
                 'enquanto Consumer ou context.watch observam alterações e provocam reconstruções '
@@ -72,78 +71,14 @@ O uso correto do Provider ajuda a separar regra de negócio da interface e reduz
         }
 
         return {
-          'result':
-              'Imagine que vários widgets precisam saber a mesma informação, como a pontuação de um quiz. '
+          'result': 'Imagine que vários widgets precisam saber a mesma informação, como a pontuação de um quiz. '
               'O Provider funciona como um quadro de avisos: o estado fica em um lugar central e, quando muda, '
               'ele avisa apenas os widgets interessados para atualizarem a tela.'
         };
 
       case StudyAction.quiz:
-        return {
-          'title': 'Quiz: Provider no Flutter',
-          'questions': [
-            {
-              'question': 'Qual é a principal função do Provider?',
-              'options': [
-                'Gerenciar estado',
-                'Criar banco de dados',
-                'Compilar o aplicativo',
-                'Substituir o Navigator'
-              ],
-              'correctIndex': 0,
-              'explanation':
-                  'Provider é usado principalmente para compartilhar e gerenciar estado.'
-            },
-            {
-              'question': 'Qual classe pode chamar notifyListeners()?',
-              'options': [
-                'Scaffold',
-                'ChangeNotifier',
-                'MaterialApp',
-                'Navigator'
-              ],
-              'correctIndex': 1,
-              'explanation':
-                  'ChangeNotifier possui notifyListeners(), usado para avisar seus ouvintes.'
-            },
-            {
-              'question': 'Para que serve ChangeNotifierProvider?',
-              'options': [
-                'Salvar arquivos',
-                'Gerar rotas automaticamente',
-                'Disponibilizar um ChangeNotifier na árvore',
-                'Criar animações'
-              ],
-              'correctIndex': 2,
-              'explanation':
-                  'Ele disponibiliza a instância para os widgets descendentes.'
-            },
-            {
-              'question': 'Qual widget pode ouvir mudanças de um Provider?',
-              'options': [
-                'Consumer',
-                'Image',
-                'Divider',
-                'SafeArea'
-              ],
-              'correctIndex': 0,
-              'explanation':
-                  'Consumer reconstrói sua parte da interface quando o estado observado muda.'
-            },
-            {
-              'question': 'Qual benefício do Provider aparece no conteúdo?',
-              'options': [
-                'Aumenta o tamanho do APK',
-                'Elimina todo uso de classes',
-                'Separa regra de negócio da interface',
-                'Impede navegação entre telas'
-              ],
-              'correctIndex': 2,
-              'explanation':
-                  'A separação entre estado/regra de negócio e UI é um benefício importante.'
-            }
-          ]
-        };
+        throw StateError(
+            'Conecte a IA para gerar perguntas sobre o seu texto.');
 
       case StudyAction.flashcards:
         return {
@@ -201,53 +136,6 @@ O uso correto do Provider ajuda a separar regra de negócio da interface e reduz
     return 'Em palavras simples: $summary';
   }
 
-  Map<String, dynamic> _genericQuiz(String content) {
-    final words = _keywords(content);
-    final topic = words.isNotEmpty ? words.first : 'conteúdo';
-
-    return {
-      'title': 'Quiz sobre $topic',
-      'questions': [
-        {
-          'question': 'Qual termo aparece como um dos principais no conteúdo?',
-          'options': [
-            topic,
-            'Fotossíntese',
-            'Astronomia',
-            'Geografia física'
-          ],
-          'correctIndex': 0,
-          'explanation':
-              'O termo "$topic" foi identificado diretamente no conteúdo fornecido.'
-        },
-        {
-          'question': 'O quiz foi criado a partir de qual fonte?',
-          'options': [
-            'Do texto informado pelo usuário',
-            'De uma tabela fixa',
-            'De um arquivo de imagem',
-            'De um mapa'
-          ],
-          'correctIndex': 0,
-          'explanation':
-              'O StudyAI usa o conteúdo digitado como contexto para gerar o material.'
-        },
-        {
-          'question': 'Qual ação ajuda a revisar conceitos rapidamente?',
-          'options': [
-            'Ignorar o conteúdo',
-            'Usar perguntas e respostas',
-            'Fechar o aplicativo',
-            'Excluir o texto'
-          ],
-          'correctIndex': 1,
-          'explanation':
-              'Perguntas e respostas são uma forma prática de revisão ativa.'
-        }
-      ]
-    };
-  }
-
   Map<String, dynamic> _genericFlashcards(String content) {
     final sentences = _sentences(content).take(5).toList();
     final cards = <Map<String, String>>[];
@@ -276,45 +164,6 @@ O uso correto do Provider ajuda a separar regra de negócio da interface e reduz
         .map((item) => item.trim())
         .where((item) => item.length > 20)
         .toList();
-  }
-
-  List<String> _keywords(String content) {
-    const blocked = {
-      'para',
-      'como',
-      'uma',
-      'com',
-      'dos',
-      'das',
-      'que',
-      'por',
-      'mais',
-      'quando',
-      'onde',
-      'este',
-      'essa',
-      'isso',
-      'seus',
-      'suas',
-      'entre',
-      'sobre',
-    };
-
-    final words = content
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^a-záàâãéèêíïóôõöúçñ\s]'), ' ')
-        .split(RegExp(r'\s+'))
-        .where((w) => w.length >= 5 && !blocked.contains(w));
-
-    final counts = <String, int>{};
-    for (final word in words) {
-      counts[word] = (counts[word] ?? 0) + 1;
-    }
-
-    final ordered = counts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-
-    return ordered.take(6).map((entry) => entry.key).toList();
   }
 
   String _shorten(String value, int max) {

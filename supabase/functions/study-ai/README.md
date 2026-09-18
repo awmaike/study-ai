@@ -2,6 +2,23 @@
 
 Backend do StudyAI usando Gemini.
 
+## Quiz
+
+`quiz.ts` define as instruções e valida as perguntas, alternativas, gabaritos e
+trechos de apoio copiados do texto. `questionCount` permite 5, 10 ou 15 perguntas
+(padrão 10), e `difficulty` aceita `easy`, `medium` ou `hard` (padrão `medium`).
+Para temas, exige a quantidade selecionada e citações vazias; o conteúdo vem do
+conhecimento do modelo. Para textos, aceita menos questões se o material for curto.
+`study_input.ts` detecta temas para clientes sem `inputMode` explícito.
+Essa verificação confirma a presença do
+trecho, mas a avaliação semântica da resposta depende do modelo.
+
+Execute os testes com Node.js 24:
+
+```sh
+node --test supabase/functions/study-ai/quiz_test.ts
+```
+
 ## Secret obrigatório
 
 - `GEMINI_API_KEY`: chave criada no Google AI Studio.

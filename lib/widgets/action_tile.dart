@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'study_glyph.dart';
 
 class ActionTile extends StatelessWidget {
   const ActionTile({
     super.key,
-    required this.icon,
+    required this.glyph,
     required this.title,
     required this.subtitle,
     required this.onTap,
     this.selected = false,
   });
 
-  final IconData icon;
+  final StudyGlyphKind glyph;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
@@ -21,9 +22,8 @@ class ActionTile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: selected
-          ? scheme.primaryContainer.withOpacity(.75)
-          : scheme.surface,
+      color:
+          selected ? scheme.primaryContainer.withOpacity(.75) : scheme.surface,
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
@@ -49,13 +49,15 @@ class ActionTile extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            scheme.primary,
-                            Color.lerp(scheme.primary, scheme.tertiary, .45)!,
+                            const Color(0xFF4166F5),
+                            const Color(0xFF8052DB),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(13),
                       ),
-                      child: Icon(icon, color: Colors.white, size: 22),
+                      child: Center(
+                          child:
+                              StudyGlyph(glyph, color: Colors.white, size: 27)),
                     ),
                     const Spacer(),
                     AnimatedOpacity(

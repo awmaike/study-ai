@@ -4,7 +4,11 @@ import 'package:provider/provider.dart';
 import '../models/study_action.dart';
 import '../providers/study_provider.dart';
 import '../widgets/action_tile.dart';
+import '../widgets/study_glyph.dart';
 import '../widgets/mini_line_chart.dart';
+import '../widgets/daily_goal_card.dart';
+import 'library_screen.dart';
+import 'routine_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.onOpenStudy});
@@ -22,9 +26,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final study = context.watch<StudyProvider>();
     final scheme = Theme.of(context).colorScheme;
-    final chartValues = study.recentPercentages.isEmpty
-        ? <double>[42, 56, 51, 69, 76, 84]
-        : study.recentPercentages;
+    final chartValues = study.recentPercentages;
 
     return ListView(
       key: const PageStorageKey('home-scroll'),
@@ -37,7 +39,7 @@ class HomeScreen extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [scheme.primary, scheme.tertiary],
+                  colors: [Color(0xFF4166F5), Color(0xFF8052DB)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -50,11 +52,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.psychology_alt_rounded,
-                color: Colors.white,
-                size: 27,
-              ),
+              child: const Center(
+                  child: StudyGlyph(StudyGlyphKind.book,
+                      color: Colors.white, size: 30)),
             ),
             const SizedBox(width: 13),
             Expanded(
@@ -62,25 +62,25 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${_greeting()}, Maike 👋',
+                    '${_greeting()}!',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: scheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
                         ),
                   ),
                   const SizedBox(height: 1),
-                  Text('StudyAI', style: Theme.of(context).textTheme.titleLarge),
+                  Text('StudyAI',
+                      style: Theme.of(context).textTheme.titleLarge),
                 ],
               ),
             ),
             IconButton.filledTonal(
-              tooltip: 'Notificações',
+              tooltip: 'Minha biblioteca',
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Você está em dia com os estudos!')),
-                );
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const LibraryScreen()));
               },
-              icon: const Icon(Icons.notifications_none_rounded),
+              icon: const StudyGlyph(StudyGlyphKind.cards),
             ),
           ],
         ),
@@ -90,7 +90,11 @@ class HomeScreen extends StatelessWidget {
           child: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF211D58), Color(0xFF5B52F2), Color(0xFF8B5CF6)],
+                colors: [
+                  Color(0xFF15275B),
+                  Color(0xFF365BE8),
+                  Color(0xFF7950D6)
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -117,7 +121,7 @@ class HomeScreen extends StatelessWidget {
                     height: 125,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFF70E8DD).withOpacity(.16),
+                      color: const Color(0xFFAFBFFF).withOpacity(.16),
                     ),
                   ),
                 ),
@@ -127,24 +131,29 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 11, vertical: 7),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(.13),
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.white.withOpacity(.14)),
+                          border:
+                              Border.all(color: Colors.white.withOpacity(.14)),
                         ),
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.auto_awesome_rounded, color: Color(0xFFBDF9F2), size: 16),
+                            Icon(Icons.auto_awesome_rounded,
+                                color: Color(0xFFD8E3FF), size: 16),
                             SizedBox(width: 6),
-                            Text(
-                              'ESTUDE COM INTELIGÊNCIA ARTIFICIAL',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: .55,
+                            Flexible(
+                              child: Text(
+                                'ESTUDE COM INTELIGÊNCIA ARTIFICIAL',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: .55,
+                                ),
                               ),
                             ),
                           ],
@@ -153,7 +162,10 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 18),
                       Text(
                         'Sua matéria fica mais simples aqui.',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
                               color: Colors.white,
                               height: 1.06,
                             ),
@@ -172,7 +184,7 @@ class HomeScreen extends StatelessWidget {
                         onPressed: () => onOpenStudy(),
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF4B43D5),
+                          foregroundColor: const Color(0xFF365BE8),
                           padding: const EdgeInsets.symmetric(horizontal: 18),
                         ),
                         icon: const Icon(Icons.arrow_forward_rounded),
@@ -186,6 +198,42 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 28),
+        DailyGoalCard(
+            completed: study.questionsOn(DateTime.now()),
+            goal: study.dailyGoal,
+            onStart: () => onOpenStudy(StudyAction.quiz)),
+        const SizedBox(height: 20),
+        Card(
+            child: ListTile(
+          leading: StudyGlyph(StudyGlyphKind.quiz, color: scheme.secondary),
+          title: const Text('Planeje sua próxima sessão'),
+          subtitle: Text(
+              '${study.tasks.where((task) => !task.completed).length} tarefas pendentes • modo foco'),
+          trailing: const Icon(Icons.arrow_forward_rounded),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => Scaffold(
+                    appBar: AppBar(title: const Text('Rotina de estudos')),
+                    body: Center(
+                        child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 680),
+                            child: const RoutineScreen())),
+                  ))),
+        )),
+        const SizedBox(height: 12),
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: ListTile(
+            leading: StudyGlyph(StudyGlyphKind.book, color: scheme.primary),
+            title: const Text('Minha biblioteca'),
+            subtitle: Text(study.library.isEmpty
+                ? 'Guarde suas melhores descobertas'
+                : '${study.library.length} ${study.library.length == 1 ? "material" : "materiais"} para revisar'),
+            trailing: const Icon(Icons.arrow_forward_rounded),
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const LibraryScreen())),
+          ),
+        ),
+        const SizedBox(height: 24),
         const _SectionTitle(
           title: 'Ações rápidas',
           subtitle: 'Escolha como você quer estudar',
@@ -200,25 +248,25 @@ class HomeScreen extends StatelessWidget {
           childAspectRatio: 1.02,
           children: [
             ActionTile(
-              icon: Icons.subject_rounded,
+              glyph: StudyGlyphKind.summary,
               title: 'Resumir',
               subtitle: 'Veja apenas o essencial',
               onTap: () => onOpenStudy(StudyAction.summary),
             ),
             ActionTile(
-              icon: Icons.lightbulb_outline_rounded,
+              glyph: StudyGlyphKind.explanation,
               title: 'Explicar',
               subtitle: 'Entenda do seu jeito',
               onTap: () => onOpenStudy(StudyAction.explanation),
             ),
             ActionTile(
-              icon: Icons.quiz_outlined,
+              glyph: StudyGlyphKind.quiz,
               title: 'Criar quiz',
               subtitle: 'Teste seu conhecimento',
               onTap: () => onOpenStudy(StudyAction.quiz),
             ),
             ActionTile(
-              icon: Icons.style_outlined,
+              glyph: StudyGlyphKind.cards,
               title: 'Flashcards',
               subtitle: 'Revise mais rápido',
               onTap: () => onOpenStudy(StudyAction.flashcards),
@@ -242,20 +290,45 @@ class HomeScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  _Metric(value: '${study.averagePercentage.round()}%', label: 'Média geral', color: scheme.primary),
+                  _Metric(
+                      value: '${study.averagePercentage.round()}%',
+                      label: 'Média geral',
+                      color: scheme.primary),
                   Container(width: 1, height: 42, color: scheme.outlineVariant),
-                  _Metric(value: '${study.quizzesCompleted}', label: 'Quizzes feitos', color: scheme.secondary),
+                  _Metric(
+                      value: '${study.quizzesCompleted}',
+                      label: 'Quizzes feitos',
+                      color: scheme.secondary),
                   Container(width: 1, height: 42, color: scheme.outlineVariant),
-                  _Metric(value: '${study.totalCorrect}', label: 'Acertos', color: scheme.tertiary),
+                  _Metric(
+                      value: '${study.totalCorrect}',
+                      label: 'Acertos',
+                      color: scheme.tertiary),
                 ],
               ),
               const SizedBox(height: 20),
-              MiniLineChart(values: chartValues, height: 118),
+              if (chartValues.isEmpty)
+                SizedBox(
+                  height: 118,
+                  child: Center(
+                    child: Text(
+                      'Conclua um quiz para ver sua evolução.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                )
+              else
+                MiniLineChart(values: chartValues, height: 118),
               const SizedBox(height: 6),
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  study.history.isEmpty ? 'Prévia de desempenho' : 'Últimos resultados',
+                  study.history.isEmpty
+                      ? 'Sem resultados ainda'
+                      : 'Últimos resultados',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: scheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
@@ -295,7 +368,8 @@ class _SectionTitle extends StatelessWidget {
 }
 
 class _Metric extends StatelessWidget {
-  const _Metric({required this.value, required this.label, required this.color});
+  const _Metric(
+      {required this.value, required this.label, required this.color});
 
   final String value;
   final String label;
@@ -308,7 +382,8 @@ class _Metric extends StatelessWidget {
         children: [
           Text(
             value,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: color),
+            style:
+                Theme.of(context).textTheme.titleLarge?.copyWith(color: color),
           ),
           const SizedBox(height: 3),
           Text(
