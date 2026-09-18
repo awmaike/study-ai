@@ -30,16 +30,16 @@ Future<void> main() async {
           create: (_) => ThemeProvider(storage),
         ),
       ],
-      child: StudyAIApp(
-        home: endpoint.isNotEmpty && publishableKey.isNotEmpty
-            ? AuthGate(preferences: prefs)
-            : const Scaffold(
+      child: endpoint.isNotEmpty && publishableKey.isNotEmpty
+          ? AuthGate(preferences: prefs)
+          : const StudyAIApp(
+              home: Scaffold(
                 body: Center(
                   child: Text(
                       'Inicie pelo run_study_ai.bat para acessar sua conta.'),
                 ),
               ),
-      ),
+            ),
     ),
   );
 }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../app.dart';
 import '../providers/study_provider.dart';
 import '../services/ai_service.dart';
 import '../services/storage_service.dart';
@@ -45,7 +46,7 @@ class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
     final userId = _userId;
-    if (userId == null) return const LoginScreen();
+    if (userId == null) return const StudyAIApp(home: LoginScreen());
 
     return ChangeNotifierProvider<StudyProvider>(
       key: ValueKey(userId),
@@ -56,9 +57,11 @@ class _AuthGateState extends State<AuthGate> {
         ),
         storageService: StorageService(widget.preferences, userId: userId),
       ),
-      child: AppShell(
-        accountEmail: _auth.currentUser?.email,
-        onSignOut: () => _auth.signOut(),
+      child: StudyAIApp(
+        home: AppShell(
+          accountEmail: _auth.currentUser?.email,
+          onSignOut: () => _auth.signOut(),
+        ),
       ),
     );
   }
